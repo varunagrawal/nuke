@@ -36,8 +36,13 @@ def _argparse():
     return args
 
 
-if __name__ == "__main__":
+def main():
     args = _argparse()
     directory = osp.abspath(args.directory)
     if args.y or prompt.yn("Are you sure you want to nuke this directory?"):
         nuke(directory)
+
+
+if __name__ == "__main__":
+    main()
+        
