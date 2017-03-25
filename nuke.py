@@ -14,6 +14,19 @@ from clint.textui import colored, puts, prompt
 def nuke(directory):
     puts("Nuking " + colored.cyan(directory))
         
+    try:
+        # Go to the parent directory
+        os.chdir(osp.basename(directory))
+        puts(osp.dirname(directory))
+
+        # Nuke the directory
+        shutil.rmtree(directory)
+        os.mkdir(directory)
+    except (FileNotFoundError,):
+        puts(colored.yellow("Nuke target does not exist..."))
+    except (Exception,):
+        puts(colored.yellow("Nuking failed..."))
+
 
 def _argparse():
     parser = argparse.ArgumentParser("nuke")
