@@ -1,7 +1,7 @@
 Nuke
 =====
 
-Command line tool nuking a directory.
+Command line tool for nuking a directory.
 
 .. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
     :target: https://saythanks.io/to/varunagrawal
