@@ -14,22 +14,13 @@ def nuke(directory):
     puts("Nuking " + colored.cyan(directory))
     try:
         # Nuke the directory
-
-        # If we have to nuke the current directory,
-        # we simply delete all the contents of the directory
-        if directory == os.getcwd():
-            for x in os.listdir(directory):
-                t = osp.join(directory, x)
-                if osp.isdir(t):
-                    shutil.rmtree(t)
-                else:
-                    os.remove(t)
-
-        # Deleting a specified directory is easier,
-        # but we have to create the directory again
-        else:
-            shutil.rmtree(directory)
-            os.mkdir(directory)
+        # Just iterate over the contents and delete everything accordingly.
+        for x in os.listdir(directory):
+            t = osp.join(directory, x)
+            if osp.isdir(t):
+                shutil.rmtree(t)
+            else:
+                os.remove(t)
 
     except (FileNotFoundError,):
         puts(colored.yellow("Nuke target does not exist..."))
