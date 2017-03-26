@@ -7,7 +7,7 @@ dependencies = ['clint']
 
 setup(
     name='nuke',
-    version='1.0.0',
+    version='1.0.2',
     url='https://github.com/varunagrawal/nuke',
     license='MIT',
     author='Varun Agrawal',
