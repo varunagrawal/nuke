@@ -4,6 +4,7 @@ Command line tool for nuking a directory..
 from setuptools import find_packages, setup
 from codecs import open
 from os import path
+import nuke
 
 dependencies = ['clint']
 
@@ -14,11 +15,11 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='nuke',
-    version='1.0.2',
+    version=nuke.__version__,
     url='https://github.com/varunagrawal/nuke',
-    license='MIT',
-    author='Varun Agrawal',
-    author_email='varunagrawal@gatech.edu',
+    license=nuke.__license__,
+    author=nuke.__author__,
+    author_email=nuke.__email__,
     description='Command line tool to nuke a directory',
     long_description=long_description,
     packages=find_packages(exclude=['tests']),
@@ -36,8 +37,8 @@ setup(
         # 'Development Status :: 1 - Planning',
         # 'Development Status :: 2 - Pre-Alpha',
         # 'Development Status :: 3 - Alpha',
-        'Development Status :: 4 - Beta',
-        # 'Development Status :: 5 - Production/Stable',
+        # 'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         # 'Development Status :: 6 - Mature',
         # 'Development Status :: 7 - Inactive',
         'Environment :: Console',
