@@ -43,7 +43,7 @@ def main():
     """The main function where it all starts."""
     args = _argparse()
     directory = osp.abspath(args.directory)
-    if args.y or prompt.yn("Are you sure you want to nuke directory" + colored.blue(directory) + "?"):
+    if args.y or prompt.yn("Are you sure you want to nuke directory " + colored.blue(directory) + "?"):
         nuke(directory)
 
 
