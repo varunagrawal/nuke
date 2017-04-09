@@ -10,9 +10,16 @@ import shutil
 from clint.textui import colored, puts, prompt
 
 
-def parse_ignore_file(file):
-    with open(file) as ignore_file:
-        ignore_list = ignore_file.readlines()
+def parse_ignore_file(filename, dirname):
+    """
+    Parse the ignore file and return a list of ignore patterns. 
+    Each pattern has the complete file path so we can take into account ignore at different levels. 
+    :param filename: The name of the ignore file.
+    :param dirname: The directory name where the ignore file was found. 
+    :return: List of ignore patterns.
+    """
+    with open(filename) as ignore_file:
+        ignore_list = [osp.join(dirname, x.strip()) for x in ignore_file.readlines()]
     return ignore_list
 
 
@@ -23,42 +30,35 @@ def nuke(directory):
     element_list = []
     ignore_patterns = []
 
+    # Get the list of all the files/dirs in the directory to nuke.
+    # We traverse in a bottom up manner so that directory removal is trivial.
     for (dirpath, dirnames, filenames) in os.walk(directory, topdown=False):
         element_list.extend([osp.join(dirpath, dn) for dn in dirnames])
         for fn in filenames:
-            print(fn)
             if fn == ".nukeignore":
-                print("Found a nukeignore at {}".format(osp.join(dirpath, fn)))
-                ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn)))
+                ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn), dirpath))
                 continue
             element_list.append(osp.join(dirpath, fn))
-
-    # if ".nukeignore" in element_list:
-    #     with open(os.path.join(directory, ".nukeignore")) as nuke_ignore:
-    #         ignore_patterns = nuke_ignore.readlines()
-    #         element_list.remove(".nukeignore")
 
     try:
         # Nuke the directory
         # Just iterate over the contents and delete everything accordingly.
-        print(element_list)
-        print(ignore_patterns)
-        # TODO figure out how to match patterns correctly
+        nuke_list = list(element_list)
+        # Filter the nuke list based on the ignore patterns.
         for pattern in ignore_patterns:
-            for f in element_list:
-                print("Filename: {0}\tPattern: {1}".format(f, pattern))
-                if fnmatch.fnmatch(f, pattern):
-                    print("{0} matches {1}".format(f, pattern))
-            element_list = [n for n in element_list if not fnmatch.fnmatch(n, pattern)]
-        print(element_list)
+            nuke_list = [n for n in nuke_list if not fnmatch.fnmatch(n, pattern)]
 
-        for x in element_list:
+        for x in nuke_list:
             t = osp.join(directory, x)
-            # if
-            # if osp.isdir(t):
-            #     shutil.rmtree(t)
-            # else:
-            #     os.remove(t)
+            if osp.isdir(t):
+                try:
+                    os.rmdir(t)
+                except (OSError,):
+                    # This means the directory is not empty.
+                    # Possibly because an ignored file is in the directory.
+                    continue
+            else:
+                os.remove(t)
 
     except (FileNotFoundError,):
         puts(colored.yellow("Nuke target does not exist..."))
