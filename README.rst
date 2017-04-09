@@ -1,5 +1,5 @@
 Nuke
-=====
+====
 
 Command line tool for nuking a directory 💥.
 
@@ -19,7 +19,7 @@ Installing ``nuke`` is intended to be super easy. The only dependency is a suppo
 
 
 Usage
--------
+-----
 
 The most common usage of ``nuke`` is when you wish to recreate a build directory for a build program such as CMake.
 
@@ -40,3 +40,31 @@ Since nuking is a dangerous operation and you don't want to inadvertently delete
 .. code-block:: shell
 
     $ nuke -y /path/to/dir/
+
+You can also specify a ``.nukeignore`` file inside the directory to be nuked. This works similar to the ``.gitignore`` file. Every file that matches a pattern in the ``.nukeignore`` is ignored and spared from a gruesome fate of its eligible siblings.
+
+For example:
+
+.. code-block:: shell
+
+    *.py
+
+will result in all ``.py`` files not being nuked.
+
+Version History
+~~~~~~~~~~~~~~~
+
+2.0.0
++++++
+
+Added feature to ignore files to nuke based on a ``.nukeignore`` file on a per directory level.
+
+1.0.5
++++++
+
+Minor bug fixes.
+
+1.0
++++
+
+Nuke is out!
