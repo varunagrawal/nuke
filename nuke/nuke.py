@@ -3,10 +3,10 @@
 
 """Main command line tool to nuke a directory."""
 import argparse
+import errno
 import fnmatch
 import os
 import os.path as osp
-import shutil
 from clint.textui import colored, puts, prompt
 
 
@@ -60,8 +60,11 @@ def nuke(directory):
             else:
                 os.remove(t)
 
-    except (FileNotFoundError,):
-        puts(colored.yellow("Nuke target does not exist..."))
+    except (OSError,) as ex:
+        if ex.errno == errno.ENOENT:
+            puts(colored.yellow("Nuke target does not exist..."))
+        else:
+            puts(colored.red("File based {0} exception! Please report on Github.".format(ex.errno)))
     except (Exception,):
         puts(colored.yellow("Nuking failed..."))
 
