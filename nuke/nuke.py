@@ -49,16 +49,15 @@ def nuke(directory):
             nuke_list = [n for n in nuke_list if not fnmatch.fnmatch(n, pattern)]
 
         for x in nuke_list:
-            t = osp.join(directory, x)
-            if osp.isdir(t):
+            if osp.isdir(x):
                 try:
-                    os.rmdir(t)
+                    os.rmdir(x)
                 except (OSError,):
                     # This means the directory is not empty.
                     # Possibly because an ignored file is in the directory.
                     continue
             else:
-                os.remove(t)
+                os.remove(x)
 
     except (OSError,) as ex:
         if ex.errno == errno.ENOENT:
