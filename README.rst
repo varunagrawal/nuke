@@ -1,14 +1,22 @@
 Nuke
 ====
 
-Command line tool for nuking a directory 💥.
+.. image:: https://img.shields.io/pypi/v/nuke.svg
+    :target: https://pypi.python.org/pypi/nuke
 
-.. image:: https://badge.fury.io/py/nuke.svg
-    :target: https://badge.fury.io/py/nuke
+.. image:: https://img.shields.io/pypi/l/nuke.svg
+    :target: https://pypi.python.org/pypi/nuke
 
+.. image:: https://img.shields.io/pypi/wheel/nuke.svg
+    :target: https://pypi.python.org/pypi/nuke
+
+.. image:: https://img.shields.io/pypi/pyversions/nuke.svg
+    :target: https://pypi.python.org/pypi/nuke
 
 .. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
     :target: https://saythanks.io/to/varunagrawal
+
+Command line tool for nuking a directory 💥.
 
 Installation
 ------------
