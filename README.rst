@@ -3,6 +3,10 @@ Nuke
 
 Command line tool for nuking a directory 💥.
 
+.. image:: https://badge.fury.io/py/nuke.svg
+    :target: https://badge.fury.io/py/nuke
+
+
 .. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
     :target: https://saythanks.io/to/varunagrawal
 
