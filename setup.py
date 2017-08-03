@@ -4,7 +4,6 @@ Command line tool for nuking a directory..
 from setuptools import find_packages, setup
 from codecs import open
 from os import path
-import pip
 import nuke
 
 dependencies = ["click", "crayons"]
@@ -50,8 +49,9 @@ setup(
         'Operating System :: Unix',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )
