@@ -4,9 +4,11 @@ Command line tool for nuking a directory..
 from setuptools import find_packages, setup
 from codecs import open
 from os import path
+import pip
 import nuke
 
-dependencies = ['clint']
+session = pip.download.PipSession()
+dependencies = [str(ir.req) for ir in pip.req.parse_requirements('requirements.txt', session=session)]
 
 here = path.abspath(path.dirname(__file__))
 # Get the long description from the README file
