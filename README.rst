@@ -66,6 +66,11 @@ will result in all ``.py`` files not being nuked.
 Version History
 ~~~~~~~~~~~~~~~
 
+2.1.0
++++++
+
+Migrated from ``clint`` to ``click`` to streamline code.
+
 2.0.0
 +++++
 
