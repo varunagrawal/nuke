@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """Main command line tool to nuke a directory."""
-import argparse
 import errno
 import fnmatch
 import os
 import os.path as osp
-from clint.textui import colored, puts, prompt
+import click
+import crayons
 
 
 def parse_ignore_file(filename, dirname):
@@ -24,8 +24,8 @@ def parse_ignore_file(filename, dirname):
 
 
 def nuke(directory):
-    """Nuke the directory specified."""
-    puts("Nuking " + colored.cyan(directory))
+    """This is where all the nuking happens."""
+    click.echo("Nuking " + crayons.cyan(directory))
 
     element_list = []
     ignore_patterns = []
@@ -48,42 +48,36 @@ def nuke(directory):
         for pattern in ignore_patterns:
             nuke_list = [n for n in nuke_list if not fnmatch.fnmatch(n, pattern)]
 
-        for x in nuke_list:
-            if osp.isdir(x):
-                try:
-                    os.rmdir(x)
-                except (OSError,):
-                    # This means the directory is not empty.
-                    # Possibly because an ignored file is in the directory.
-                    continue
-            else:
-                os.remove(x)
+        with click.progressbar(nuke_list, length=len(nuke_list)) as nuke_l:
+            for x in nuke_l:
+                if osp.isdir(x):
+                    try:
+                        os.rmdir(x)
+                    except (OSError,):
+                        # This means the directory is not empty.
+                        # Possibly because an ignored file is in the directory.
+                        continue
+                else:
+                    os.remove(x)
 
     except (OSError,) as ex:
         if ex.errno == errno.ENOENT:
-            puts(colored.yellow("Nuke target does not exist..."))
+            click.secho("Nuke target does not exist...", fg='yellow')
         else:
-            puts(colored.red("File based {0} exception! Please report on Github.".format(ex.errno)))
+            click.secho("File based {0} exception! Please report on Github.".format(ex.errno), fg='red')
     except (Exception,):
-        puts(colored.yellow("Nuking failed..."))
+        click.secho("Nuking failed...", fg='yellow')
 
 
-def _argparse():
-    parser = argparse.ArgumentParser("nuke")
-    parser.add_argument("directory",
-                        nargs='?',
-                        default=os.getcwd(),
-                        help="Directory to nuke! Default is current directory")
-    parser.add_argument("-y", help="Confirm nuking", action="store_true")
-    args = parser.parse_args()
-    return args
-
-
-def main():
-    """The main function where it all starts."""
-    args = _argparse()
-    directory = osp.abspath(args.directory)
-    if args.y or prompt.yn("Are you sure you want to nuke directory " + colored.blue(directory) + "?"):
+@click.command()
+@click.option('-y', is_flag=True, is_eager=True, default=False, help="Confirm nuking")
+@click.argument('directory', nargs=1, default=os.getcwd())
+def main(directory, y):
+    """Nuke the DIRECTORY specified. Default directory is the current directory."""
+    directory = osp.abspath(directory)
+    if y or click.confirm("Are you sure you want to nuke directory " + crayons.blue(directory) + "?",
+                          default=True,
+                          abort=False):
         nuke(directory)
 
 
