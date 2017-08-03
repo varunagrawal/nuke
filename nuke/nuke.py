@@ -23,10 +23,12 @@ def parse_ignore_file(filename, dirname):
     return ignore_list
 
 
-def nuke(directory):
-    """This is where all the nuking happens."""
-    click.echo("Nuking " + crayons.cyan(directory))
-
+def get_file_list(directory):
+    """
+    Retrieve all the files in the directory tree that are to be nuked, as well as the list of file patterns to ignore.
+    :param directory: The root directory of the directory tree to nuke.
+    :return: The list of all files and the list of all ignore patterns.
+    """
     element_list = []
     ignore_patterns = []
 
@@ -35,10 +37,19 @@ def nuke(directory):
     for (dirpath, dirnames, filenames) in os.walk(directory, topdown=False):
         element_list.extend([osp.join(dirpath, dn) for dn in dirnames])
         for fn in filenames:
-            if fn == ".nukeignore":
+            if ".nukeignore" in fn:
                 ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn), dirpath))
                 continue
             element_list.append(osp.join(dirpath, fn))
+
+    return element_list, ignore_patterns
+
+
+def nuke(directory):
+    """This is where all the nuking happens."""
+    click.echo("Nuking " + crayons.cyan(directory))
+
+    element_list, ignore_patterns = get_file_list(directory)
 
     try:
         # Nuke the directory
@@ -69,14 +80,26 @@ def nuke(directory):
         click.secho("Nuking failed...", fg='yellow')
 
 
-@click.command()
-@click.option('-y', is_flag=True, is_eager=True, default=False, help="Confirm nuking")
+def list_files(directory):
+    # TODO flag to retrieve in dirtree format?
+    file_list, _ = get_file_list(directory=directory)
+    for f in file_list:
+        click.echo(crayons.white(click.format_filename(f)))  # click formats the filename to the absolute path
+    return
+
+
+@click.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('directory', nargs=1, default=os.getcwd())
-def main(directory, y):
+@click.option('-l', is_flag=True, default=False, help="List all the files that will be nuked")
+@click.option('-y', is_flag=True, is_eager=True, default=False, help="Confirm nuking")
+def main(directory, l, y):
     """Nuke the DIRECTORY specified. Default directory is the current directory."""
     directory = osp.abspath(directory)
+    if l:
+        list_files(directory=directory)
+        return
     if y or click.confirm("Are you sure you want to nuke directory " + crayons.blue(directory) + "?",
-                          default=True,
+                          default=True,  # sets the prompt to Y/n
                           abort=False):
         nuke(directory)
 

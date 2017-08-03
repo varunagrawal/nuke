@@ -69,7 +69,7 @@ Version History
 2.1.0
 +++++
 
-Migrated from ``clint`` to ``click`` to streamline code.
+Migrated from ``clint`` to ``click`` to streamline code. Added ``-l`` flag to list files that will be deleted without deleting them.
 
 2.0.0
 +++++
