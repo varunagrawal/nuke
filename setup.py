@@ -7,8 +7,7 @@ from os import path
 import pip
 import nuke
 
-session = pip.download.PipSession()
-dependencies = [str(ir.req) for ir in pip.req.parse_requirements('requirements.txt', session=session)]
+dependencies = ["click", "crayons"]
 
 here = path.abspath(path.dirname(__file__))
 # Get the long description from the README file
