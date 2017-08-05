@@ -63,8 +63,17 @@ For example:
 
 will result in all ``.py`` files not being nuked.
 
+Suppose you just want to see what files will be nuked without actually deleting them, you can then run ``nuke -l /path/to/dir``, and this will print out the directory tree of all the files that will be nuked.
+
+
 Version History
 ~~~~~~~~~~~~~~~
+
+2.2.0
++++++
+
+Major bugfix in the ``.nukeignore`` functionality. ``nuke`` now ignores whole directories if the pattern ends in a slash (``/``).
+Also, ``-l`` prints out files as a directory tree.
 
 2.1.1
 +++++
