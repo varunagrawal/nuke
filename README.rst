@@ -66,6 +66,10 @@ will result in all ``.py`` files not being nuked.
 Version History
 ~~~~~~~~~~~~~~~
 
+2.1.1
++++++
+Updated Python Trove Classifiers.
+
 2.1.0
 +++++
 
