@@ -31,7 +31,7 @@ def parse_ignore_file(filename, dirname):
 
 def get_dirtree(directory):
     """
-    Get the directory tree of the `directory`
+    Get the directory tree of the `directory`.
     :param directory: The root directory from where to generate the directory tree.
     :return: The list of paths with appropriate indenting
     """
@@ -44,8 +44,16 @@ def get_dirtree(directory):
         level = dirpath.replace(directory, '').count(os.sep)
         indent = ' ' * 4 * level
 
+        # We record every element in the tree as a dict of the indented name
+        # and the path so we can use the ignore methods on the paths and still
+        # have the indented names for our tree
+
         # Add the current directory
-        element_list.append('{}{}/'.format(indent, os.path.basename(dirpath)))
+        element = {
+            'filename': '{}{}/'.format(indent, os.path.basename(dirpath)),
+            'path': dirpath
+        }
+        element_list.append(element)
 
         subindent = ' ' * 4 * (level + 1)
         # Add the files in the directory
@@ -53,7 +61,8 @@ def get_dirtree(directory):
             if ".nukeignore" in fn:
                 ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn), dirpath))
                 continue
-            element_list.append("{}{}".format(subindent, fn))
+            element = {'filename': "{}{}".format(subindent, fn), 'path': osp.join(dirpath, fn)}
+            element_list.append(element)
 
     return element_list, ignore_patterns
 
@@ -94,21 +103,24 @@ def ignore_paths(path_list, ignore_patterns, process=lambda x: x):
     return path_list
 
 
-def list_files(directory):
+def list_files_tree(directory):
     """
     List all the files to be nuked in a nice directory tree.
     :param directory: The root directory to list from.
-    :return: None
+    :return: The list of files to be nuked. Each element of the list is a dict of filename and path
     """
     # seperate function to get the dirtree to make the code more legible
     file_list, ignore_patterns = get_dirtree(directory)
 
     # Filter the nuke list based on the ignore patterns.
-    file_list = ignore_paths(file_list, ignore_patterns, lambda x: x.strip())
+    file_list = ignore_paths(file_list, ignore_patterns, lambda x: x['path'])
+    # Get the indented filenames only for printing
+    file_tree = [x['filename'] for x in file_list]
 
-    for f in file_list:
+    for f in file_tree:
         click.echo(crayons.white(click.format_filename(f)))  # click formats the filename to the absolute path
-    return
+
+    return file_list
 
 
 def nuke(directory):
@@ -154,7 +166,7 @@ def main(directory, l, y):
     """Nuke the DIRECTORY specified. Default directory is the current directory."""
     directory = osp.abspath(directory)
     if l:
-        list_files(directory=directory)
+        list_files_tree(directory=directory)
         return
     if y or click.confirm("Are you sure you want to nuke directory " + crayons.blue(directory) + "?",
                           default=True,  # sets the prompt to Y/n

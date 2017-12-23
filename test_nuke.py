@@ -65,19 +65,20 @@ def test_nuke_list():
     os.mkdir(osp.join(test_dir, 'test_subdir'))
     open(osp.join(test_dir, 'test_subdir', "subfile.txt"), 'a').close()
 
-    nuke_files_indented, ignore_patterns = nuke.get_dirtree(test_dir)
-    nuke_files = [f.strip() for f in nuke_files_indented]
+    # Create the nukeignore file
+    with open(osp.join(test_dir, NUKEIGNORE), 'w') as ni:
+        ni.writelines('\n'.join(["ignore_dir/", 'ignore_file']))
 
-    for root, dirs, files in os.walk(test_dir):
-        # print(root)
-        for f in files:
-            assert str(f) in nuke_files
+    nuke_files = nuke.list_files_tree(test_dir)
 
-    nuke.list_files(test_dir)
+    for f in nuke_files:
+        assert 'ignore' not in f['filename'].strip()
+
     # clean up the directory for the teardown
     nuke.nuke(test_dir)
 
 
 def teardown():
     """Invoke each time after running a test."""
-    os.rmdir(test_dir)
+    # os.rmdir(test_dir)
+    shutil.rmtree(test_dir)  # remove the test directory
