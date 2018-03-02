@@ -54,6 +54,10 @@ Suppose you just want to see what files will be nuked without actually deleting 
 
 ### Version History
 
+##### 2.2.2
+
+Use of `pipenv` as default toolchain.
+
 ##### 2.2.1
 
 Fixed bug in the `-l` list functionality so that ignored files are not displayed.
