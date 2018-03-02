@@ -4,6 +4,7 @@ python:
   - "3.5"
   - "3.6"
 install:
+  - "sudo apt-get install pandoc"
   - "pip install tox-travis pipenv --upgrade"
   - "pipenv install"
 script: tox

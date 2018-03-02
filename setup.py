@@ -6,9 +6,6 @@ from os import path
 from pypandoc import convert
 import nuke
 
-from pypandoc.pandoc_download import download_pandoc
-download_pandoc()
-
 dependencies = ["click", "crayons"]
 
 here = path.abspath(path.dirname(__file__))
