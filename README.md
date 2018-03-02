@@ -5,6 +5,7 @@
 [![license](https://img.shields.io/pypi/l/nuke.svg)](https://pypi.python.org/pypi/nuke)
 [![wheel](https://img.shields.io/pypi/wheel/nuke.svg)](https://pypi.python.org/pypi/nuke)
 [![python](https://img.shields.io/pypi/pyversions/nuke.svg)](https://pypi.python.org/pypi/nuke)
+[![Build Status](https://travis-ci.org/varunagrawal/nuke.svg?branch=master)](https://travis-ci.org/varunagrawal/nuke)
 [![say-thanks](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/varunagrawal)
 
 Command line tool for nuking a directory 💥.
@@ -50,39 +51,3 @@ For example:
 will result in all ``.py`` files not being nuked.
 
 Suppose you just want to see what files will be nuked without actually deleting them, you can then run ``nuke -l /path/to/dir``, and this will print out the directory tree of all the files that will be nuked.
-
-
-### Version History
-
-##### 2.2.2
-
-Use of `pipenv` as default toolchain.
-
-##### 2.2.1
-
-Fixed bug in the `-l` list functionality so that ignored files are not displayed.
-
-##### 2.2.0
-
-Major bugfix in the ``.nukeignore`` functionality. ``nuke`` now ignores whole directories if the pattern ends in a slash (``/``).
-Also, ``-l`` prints out files as a directory tree.
-
-##### 2.1.1
-
-Updated Python Trove Classifiers.
-
-##### 2.1.0
-
-Migrated from ``clint`` to ``click`` to streamline code. Added ``-l`` flag to list files that will be deleted without deleting them.
-
-##### 2.0.0
-
-Added feature to ignore files to nuke based on a ``.nukeignore`` file on a per directory level.
-
-##### 1.0.5
-
-Minor bug fixes.
-
-##### 1.0
-
-Nuke is out!
