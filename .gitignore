@@ -100,3 +100,5 @@ ENV/
 # End of https://www.gitignore.io/api/python
 
 .idea
+
+.pytest_cache
