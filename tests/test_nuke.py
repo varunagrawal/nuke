@@ -4,7 +4,7 @@ from nuke import nuke
 import shutil
 import pytest
 
-test_dir = "test"
+test_dir = "test_directory"
 
 NUKEIGNORE = '.nukeignore'
 
@@ -33,7 +33,7 @@ def test_nuke_current_dir():
 
 def test_invalid_dir():
     nuke.nuke(test_dir)
-    nuke.nuke("invalid")
+    nuke.nuke("invalid_dir")
 
 
 def test_ignore_file():
