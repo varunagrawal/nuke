@@ -1,0 +1,35 @@
+# Developer Documentation
+
+This document summarizes the processes followed when developing and contributing to `nuke`. If you wish to submit a PR to fix an issue or add a feature, please read this document first.
+
+## Test Driven Development
+
+`nuke` follows Test Driven Development very stringently in order to ensure correct functionality. What this means is that before writing any functionality code, one is expected to write a test for it.
+
+The tests go in the `tests` directory which contains python files with test code. The regular source code goes into the `nuke` directory. Any PR submitted will be required to have corresponding tests added as well, else the PR will be rejected without further review.
+
+## Dependencies
+
+The following dependencies are required to develop for `nuke`. They can be installed together using `pipenv`
+
+```shell
+pipenv install
+```
+
+- pipenv
+- click
+- args
+- colorama
+- tox
+
+## Running Tests
+
+`tox` is currently set up to read the tests from the `tests` directory and as such, one only needs to run the `tox` command.
+
+```shell
+# runs all the tests against Python 2.7, 3.5 & 3.6
+tox  
+
+# test only against Python 3.6
+tox -e 36  
+```
