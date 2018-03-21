@@ -3,17 +3,11 @@ Command line tool for nuking a directory..
 """
 from setuptools import find_packages, setup
 from os import path
-from pypandoc import convert
 import nuke
 
 dependencies = ["click", "crayons"]
 
 here = path.abspath(path.dirname(__file__))
-
-
-# Get the long description from the README file
-def read_md(f): return convert(f, 'rst')
-
 
 setup(
     name='nuke',
@@ -23,7 +17,8 @@ setup(
     author=nuke.__author__,
     author_email=nuke.__email__,
     description='Command line tool to nuke a directory',
-    long_description=read_md("README.md"),
+    long_description=open("README.md", 'r').read(),
+    long_description_content_type="text/markdown",
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     zip_safe=False,

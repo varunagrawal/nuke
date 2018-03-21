@@ -14,6 +14,7 @@ crayons = "==0.1.2"
 pluggy = "==0.4.0"
 py = "==1.4.34"
 pypandoc = "==1.4"
+tox = "*"
 
 
 [dev-packages]

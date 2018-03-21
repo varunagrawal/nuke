@@ -5,4 +5,4 @@ main:
 # Submit the package. Make sure your ~/.pypirc file is set correctly
 submit:
 	python3 setup.py sdist  # package
-	python3 setup.py sdist upload  # upload
+	twine upload dist/*  # upload
