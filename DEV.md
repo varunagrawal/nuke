@@ -33,3 +33,10 @@ tox
 # test only against Python 3.6
 tox -e 36  
 ```
+
+## Makefile
+
+There is also a `Makefile` set up to ease various repetitive tasks. 
+
+- Default: The default `make` command runs the `tox` tests.
+- `make submit`: This packages and submits the latest version of the code to PyPI (only maintainer accessible).
