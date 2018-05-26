@@ -5,7 +5,10 @@ from setuptools import find_packages, setup
 from os import path
 import nuke
 
-dependencies = ["click", "crayons"]
+dependencies = [
+    "click==6.7", 
+    "crayons==0.1.2"
+]
 
 here = path.abspath(path.dirname(__file__))
 
