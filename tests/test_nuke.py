@@ -1,30 +1,40 @@
+"""Unit tests for nuke"""
+
+# pylint: disable=invalid-name,unused-variable,unused-import,missing-docstring
+
 import os
 import os.path as osp
-from nuke import nuke
 import shutil
-import pytest
 
-test_dir = "test_directory"
+import pytest
+from nuke import nuke
+
+TEST_DIR = "test_directory"
 
 NUKEIGNORE = '.nukeignore'
 
 
 def setup():
     """Invoked each time before running a test."""
-    os.mkdir(test_dir)
-    open(osp.join(test_dir, "random.py"), 'a').close()
-    open(osp.join(test_dir, "another.py"), 'a').close()
-    os.mkdir(osp.join(test_dir, 'ignore_dir'))
-    open(osp.join(test_dir, 'ignore_file'), 'a').close()
+    try:
+        os.mkdir(TEST_DIR)
+    except (FileExistsError,):
+        # if the test directory already exists then just continue.
+        pass
+
+    open(osp.join(TEST_DIR, "random.py"), 'a').close()
+    open(osp.join(TEST_DIR, "another.py"), 'a').close()
+    os.mkdir(osp.join(TEST_DIR, 'ignore_dir'))
+    open(osp.join(TEST_DIR, 'ignore_file'), 'a').close()
 
 
 def test_nuke_dir():
-    nuke.nuke(test_dir)
-    assert os.listdir(test_dir) == []
+    nuke.nuke(TEST_DIR)
+    assert os.listdir(TEST_DIR) == []
 
 
 def test_nuke_current_dir():
-    directory = osp.join(os.getcwd(), test_dir)
+    directory = osp.join(os.getcwd(), TEST_DIR)
     os.chdir(directory)
     nuke.nuke(os.getcwd())
     assert os.listdir(".") == []
@@ -32,53 +42,53 @@ def test_nuke_current_dir():
 
 
 def test_invalid_dir():
-    nuke.nuke(test_dir)
+    nuke.nuke(TEST_DIR)
     nuke.nuke("invalid_dir")
 
 
 def test_ignore_file():
-    with open(osp.join(test_dir, NUKEIGNORE), 'w') as ni:
+    with open(osp.join(TEST_DIR, NUKEIGNORE), 'w') as ni:
         ni.write("ignore_file")
 
-    nuke.nuke(test_dir)
+    nuke.nuke(TEST_DIR)
 
-    assert os.path.exists(osp.join(test_dir, 'ignore_file'))
+    assert os.path.exists(osp.join(TEST_DIR, 'ignore_file'))
 
-    os.remove(osp.join(test_dir, NUKEIGNORE))
-    os.remove(osp.join(test_dir, 'ignore_file'))
+    os.remove(osp.join(TEST_DIR, NUKEIGNORE))
+    os.remove(osp.join(TEST_DIR, 'ignore_file'))
 
 
 def test_ignore_directory():
-    with open(osp.join(test_dir, NUKEIGNORE), 'w') as ni:
+    with open(osp.join(TEST_DIR, NUKEIGNORE), 'w') as ni:
         ni.write("ignore_dir/")
-    open(osp.join(test_dir, 'ignore_dir', 'file_inside_ignore_dir'), 'a').close()
-    nuke.nuke(test_dir)
+    open(osp.join(TEST_DIR, 'ignore_dir', 'file_inside_ignore_dir'), 'a').close()
+    nuke.nuke(TEST_DIR)
 
-    assert os.path.exists(osp.join(test_dir, 'ignore_dir'))
-    assert os.path.exists(osp.join(test_dir, 'ignore_dir', 'file_inside_ignore_dir'))
+    assert os.path.exists(osp.join(TEST_DIR, 'ignore_dir'))
+    assert os.path.exists(osp.join(TEST_DIR, 'ignore_dir', 'file_inside_ignore_dir'))
 
-    shutil.rmtree(osp.join(test_dir, 'ignore_dir'))  # remove the whole directory in one fell swoop
-    os.remove(osp.join(test_dir, NUKEIGNORE))
+    shutil.rmtree(osp.join(TEST_DIR, 'ignore_dir'))  # remove the whole directory in one fell swoop
+    os.remove(osp.join(TEST_DIR, NUKEIGNORE))
 
 
 def test_nuke_list():
-    os.mkdir(osp.join(test_dir, 'test_subdir'))
-    open(osp.join(test_dir, 'test_subdir', "subfile.txt"), 'a').close()
+    os.mkdir(osp.join(TEST_DIR, 'test_subdir'))
+    open(osp.join(TEST_DIR, 'test_subdir', "subfile.txt"), 'a').close()
 
     # Create the nukeignore file
-    with open(osp.join(test_dir, NUKEIGNORE), 'w') as ni:
+    with open(osp.join(TEST_DIR, NUKEIGNORE), 'w') as ni:
         ni.writelines('\n'.join(["ignore_dir/", 'ignore_file']))
 
-    nuke_files = nuke.list_files_tree(test_dir)
+    nuke_files = nuke.list_files_tree(TEST_DIR)
 
     for f in nuke_files:
         assert 'ignore' not in f['filename'].strip()
 
     # clean up the directory for the teardown
-    nuke.nuke(test_dir)
+    nuke.nuke(TEST_DIR)
 
 
 def teardown():
     """Invoke each time after running a test."""
-    # os.rmdir(test_dir)
-    shutil.rmtree(test_dir)  # remove the test directory
+    # os.rmdir(TEST_DIR)
+    shutil.rmtree(TEST_DIR)  # remove the test directory
