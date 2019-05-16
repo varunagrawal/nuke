@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """Main command line tool to nuke a directory."""
+
+# pylint: disable=invalid-name,unused-variable
+
 import errno
 import fnmatch
 import os
@@ -12,10 +15,10 @@ import crayons
 
 def parse_ignore_file(filename, dirname):
     """
-    Parse the ignore file and return a list of ignore patterns. 
+    Parse the ignore file and return a list of ignore patterns.
     Each pattern has the complete file path so we can take into account ignore at different levels. 
     :param filename: The name of the ignore file.
-    :param dirname: The directory name where the ignore file was found. 
+    :param dirname: The directory name where the ignore file was found.
     :return: List of ignore patterns.
     """
     ignore_list = []
@@ -23,7 +26,8 @@ def parse_ignore_file(filename, dirname):
         for x in ignore_file.readlines():
             pattern = osp.join(dirname, x.strip())
             if pattern[-1] == '/':  # we have a directory
-                ignore_list.append(pattern[:-1])  # add the pattern without the trailing slash to match the directory
+                # add the pattern without the trailing slash to match the directory
+                ignore_list.append(pattern[:-1])
                 pattern += '*'  # create pattern for all paths inside directory
             ignore_list.append(pattern)
     return ignore_list
@@ -59,9 +63,11 @@ def get_dirtree(directory):
         # Add the files in the directory
         for fn in filenames:
             if ".nukeignore" in fn:
-                ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn), dirpath))
+                ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn),
+                                                         dirpath))
                 continue
-            element = {'filename': "{}{}".format(subindent, fn), 'path': osp.join(dirpath, fn)}
+            element = {'filename': "{}{}".format(
+                subindent, fn), 'path': osp.join(dirpath, fn)}
             element_list.append(element)
 
     return element_list, ignore_patterns
@@ -69,7 +75,8 @@ def get_dirtree(directory):
 
 def get_file_list(directory):
     """
-    Retrieve all the files in the directory tree that are to be nuked, as well as the list of file patterns to ignore.
+    Retrieve all the files in the directory tree that are to be nuked, 
+    as well as the list of file patterns to ignore.
     :param directory: The root directory of the directory tree to nuke.
     :return: The list of all files and the list of all ignore patterns.
     """
@@ -83,7 +90,8 @@ def get_file_list(directory):
 
         for fn in filenames:
             if ".nukeignore" in fn:
-                ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn), dirpath))
+                ignore_patterns.extend(parse_ignore_file(osp.join(dirpath, fn),
+                                                         dirpath))
                 continue
             element_list.append(osp.join(dirpath, fn))
 
@@ -99,7 +107,8 @@ def ignore_paths(path_list, ignore_patterns, process=lambda x: x):
     :return: The updated path list
     """
     for pattern in ignore_patterns:
-        path_list = [n for n in path_list if not fnmatch.fnmatch(process(n), pattern)]
+        path_list = [n for n in path_list if not fnmatch.fnmatch(process(n),
+                                                                 pattern)]
     return path_list
 
 
@@ -107,7 +116,7 @@ def list_files_tree(directory):
     """
     List all the files to be nuked in a nice directory tree.
     :param directory: The root directory to list from.
-    :return: The list of files to be nuked. Each element of the list is a dict of filename and path
+    :return: The list of files to be nuked. Each element of the list is a dict of filename and path.
     """
     # seperate function to get the dirtree to make the code more legible
     file_list, ignore_patterns = get_dirtree(directory)
@@ -118,9 +127,29 @@ def list_files_tree(directory):
     file_tree = [x['filename'] for x in file_list]
 
     for f in file_tree:
-        click.echo(crayons.white(click.format_filename(f)))  # click formats the filename to the absolute path
+        # click formats the filename to the absolute path
+        click.echo(crayons.white(click.format_filename(f)))
 
     return file_list
+
+
+def delete(x):
+    """
+    Convenience method to delete file or directory.
+    :param x: The filesystem object to delete.
+    """
+    if osp.isdir(x):
+        # delete the directory
+        try:
+            os.rmdir(x)
+        except (OSError,):
+            # This means the directory is not empty.
+            # Possibly because an nukeignored file is in the directory.
+            return
+
+    else:
+        # delete the file
+        os.remove(x)
 
 
 def nuke(directory):
@@ -129,34 +158,25 @@ def nuke(directory):
 
     element_list, ignore_patterns = get_file_list(directory)
 
-    try:
-        # Nuke the directory
-        # Just iterate over the contents and delete everything accordingly.
-        nuke_list = list(element_list)
-        # Filter the nuke list based on the ignore patterns.
+    # Nuke the directory
+    # Just iterate over the contents and delete everything accordingly.
+    nuke_list = list(element_list)
+    # Filter the nuke list based on the ignore patterns.
 
-        nuke_list = ignore_paths(nuke_list, ignore_patterns)
+    nuke_list = ignore_paths(nuke_list, ignore_patterns)
 
-        with click.progressbar(nuke_list, length=len(nuke_list)) as nuke_l:
-            for x in nuke_l:
-                if osp.isdir(x):
-                    try:
-                        os.rmdir(x)
-                    except (OSError,):
-                        # This means the directory is not empty.
-                        # Possibly because an ignored file is in the directory.
-                        continue
+    with click.progressbar(nuke_list, length=len(nuke_list)) as nuke_l:
+        for x in nuke_l:
+            try:
+                delete(x)
+
+            except (OSError,) as ex:
+                # file does not exist
+                if ex.errno == errno.ENOENT:
+                    click.secho("Nuke target does not exist...", fg='red')
                 else:
-                    os.remove(x)
-
-    except (OSError,) as ex:
-        if ex.errno == errno.ENOENT:
-            click.secho("Nuke target does not exist...", fg='yellow')
-        else:
-            click.secho("File based {0} exception! Please report on Github.".format(ex.errno), fg='red')
-    except (Exception,):
-        click.secho("Nuking failed...", fg='yellow')
-
+                    click.secho("File exception {0}: {1}!".format(ex.errno, ex.strerror),
+                                fg='red')
 
 @click.command(context_settings={'help_option_names': ['-h', '--help']})
 @click.argument('directory', nargs=1, default=os.getcwd())
@@ -168,9 +188,10 @@ def main(directory, l, y):
     if l:
         list_files_tree(directory=directory)
         return
-    if y or click.confirm("Are you sure you want to nuke directory " + crayons.blue(directory) + "?",
-                          default=True,  # sets the prompt to Y/n
-                          abort=False):
+    if y or \
+        click.confirm("Are you sure you want to nuke directory " + crayons.blue(directory) + "?",
+                      default=True,  # sets the prompt to Y/n
+                      abort=False):
         nuke(directory)
 
 
