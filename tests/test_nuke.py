@@ -67,7 +67,8 @@ def test_ignore_directory():
     assert (TEST_DIR / 'ignore_dir').exists()
     assert (TEST_DIR / 'ignore_dir' / 'file_inside_ignore_dir').exists()
 
-    shutil.rmtree((TEST_DIR / 'ignore_dir'))  # remove the whole directory in one fell swoop
+    # remove the whole directory in one fell swoop
+    shutil.rmtree((TEST_DIR / 'ignore_dir'))
     os.remove((TEST_DIR / NUKEIGNORE))
 
 
@@ -87,8 +88,10 @@ def test_nuke_list():
         nuke_files = nuke.list_files_tree(TEST_DIR)
     output = sio.getvalue()
 
-    expected_result = "test_directory/\n    random.py\n    another.py\n" \
-    "    test_subdir/\n        subfile.txt\n"
+    expected_result = ("test_directory/random.py\n"
+                       "test_directory/another.py\n"
+                       "test_directory/test_subdir\n"
+                       "test_directory/test_subdir/subfile.txt\n")
 
     assert output == expected_result
 
