@@ -27,6 +27,10 @@ def parse_ignore_file(filename, dirname):
         for x in ignore_file.readlines():
             x = x.strip()
 
+            # ignore if line is blank or a comment
+            if x == "" or x[0] == "#":
+                continue
+
             pattern = str(dirname / x)
             # check if pattern is a directory
             if x[-1] == '/':
