@@ -64,12 +64,14 @@ def get_dirtree(directory):
         # and the path so we can use the ignore methods on the paths and still
         # have the indented names for our tree
 
-        # Add the current directory
-        element = {
-            'repr': '{}{}/'.format(indent, dirpath.name),
-            'path': dirpath
-        }
-        element_list.append(element)
+        # only add current directory as element to be nuked if no .nukeignore file is present
+        if '.nukeignore' not in filenames:
+            # Add the current directory
+            element = {
+                'repr': '{}{}/'.format(indent, dirpath.name),
+                'path': dirpath
+            }
+            element_list.append(element)
 
         subindent = ' ' * 4 * (level + 1)
         # Add the files in the directory
@@ -141,7 +143,7 @@ def list_files_tree(directory):
     file_list = ignore_paths(file_list, ignore_patterns, lambda x: str(x['path']))
 
     # Get the indented filenames only for printing
-    file_tree = [x['repr'] for x in file_list]
+    file_tree = [str(x['path']) for x in file_list]
 
     for f in file_tree:
         # click formats the filename to the absolute path
