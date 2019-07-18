@@ -6,7 +6,7 @@ from os import path
 import nuke
 
 dependencies = [
-    "click==6.7", 
+    "click==6.7",
     "crayons==0.1.2"
 ]
 
@@ -49,9 +49,8 @@ setup(
         'Operating System :: Unix',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )

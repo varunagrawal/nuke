@@ -17,7 +17,7 @@ Installing ``nuke`` is intended to be super easy. The only dependency is a suppo
 ```shell
 $ pip install nuke
 ```
-``nuke`` is supported for Python versions 2.7, 3.5 & 3.6+.
+``nuke`` is supported for Python 3.6+.
 
 
 ## Usage
