@@ -27,7 +27,7 @@ pipenv install
 `tox` is currently set up to read the tests from the `tests` directory and as such, one only needs to run the `tox` command.
 
 ```shell
-# runs all the tests against Python 3.6 & 3.7
+# runs all the tests against Python 3.6, 3.7 & 3.8
 tox  
 
 # test only against Python 3.6
