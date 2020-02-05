@@ -3,6 +3,7 @@ language: python
 python:
   - "3.6"
   - "3.7"
+  - "3.8"
 install:
   - "sudo apt-get install pandoc"
   - "pip install tox-travis pipenv --upgrade"

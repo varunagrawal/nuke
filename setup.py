@@ -6,8 +6,8 @@ from os import path
 import nuke
 
 dependencies = [
-    "click==6.7",
-    "crayons==0.1.2"
+    "click==7.0",
+    "crayons==0.3.0"
 ]
 
 here = path.abspath(path.dirname(__file__))
@@ -50,6 +50,7 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )
