@@ -10,13 +10,19 @@ import crayons
 
 from .utils import parse_ignore_file
 
-# foregound color
-fg = lambda text, color: "\33[38;5;" + str(color) + "m" + text + "\33[0m"
-# background color
-bg = lambda text, color: "\33[48;5;" + str(color) + "m" + text + "\33[0m"
+
+def fg(text, color):
+    """Set text to foregound color."""
+    return "\33[38;5;" + str(color) + "m" + text + "\33[0m"
+
+
+def bg(text, color):
+    """Set text to background color."""
+    return "\33[48;5;" + str(color) + "m" + text + "\33[0m"
 
 
 def get_colorized(path: Path):
+    """Colorize path name based on type."""
     name = path.name
     if path.is_dir():
         return crayons.blue(name)
@@ -72,7 +78,8 @@ def get_dirtree(directory):
         # Add the files in the directory
         for fn in filenames:
             if fn == ".nukeignore":
-                ignore_patterns.extend(parse_ignore_file((dirpath / fn), dirpath))
+                ignore_patterns.extend(
+                    parse_ignore_file((dirpath / fn), dirpath))
                 continue
 
             element = {

@@ -87,14 +87,14 @@ def test_nuke_list():
     with redirect_stdout(sio):
         nuke_files = nuke.list_files_tree(TEST_DIR)
     output = sio.getvalue()
-    
-    #split output into separate lines
+
+    # split output into separate lines
     output = output.strip().split('\n')
 
-    expected_result = ("test_directory/random.py",
-                       "test_directory/another.py",
-                       "test_directory/test_subdir",
-                       "test_directory/test_subdir/subfile.txt")
+    expected_result = ("|—— another.py",
+                       "|—— random.py",
+                       "|—— test_subdir/",
+                       "|  |—— subfile.txt")
 
     for path in output:
         assert path in expected_result
