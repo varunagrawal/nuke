@@ -6,8 +6,8 @@ from os import path
 import nuke
 
 dependencies = [
-    "click==7.0",
-    "crayons==0.3.0"
+    "click>=7.0",
+    "crayons>=0.3.0"
 ]
 
 here = path.abspath(path.dirname(__file__))
@@ -19,7 +19,7 @@ setup(
     license=nuke.__license__,
     author=nuke.__author__,
     author_email=nuke.__email__,
-    description='Command line tool to nuke a directory',
+    description='Command line tool for nuking a directory 💥',
     long_description=open("README.md", 'r').read(),
     long_description_content_type="text/markdown",
     packages=find_packages(exclude=['tests']),
