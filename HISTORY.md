@@ -1,5 +1,9 @@
 ## Version History
 
+#### 2.4.5
+
+Fix bug with matching directories without trailing slash.
+
 #### 2.4.4
 
 - Change the main entry file.
