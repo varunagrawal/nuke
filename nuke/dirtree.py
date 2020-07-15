@@ -47,12 +47,13 @@ def get_dirtree(directory):
     element_list = []
     ignore_patterns = []
 
-    file_link = fg("|—— ", 241)
-    tree_branch = fg("|  ", 241)
+    file_link = fg("├── ", 241)  # u'\u251c\u2500\u2500 '
+    last_file_link = fg("└── ", 259)  # u'\u2514\u2500\u2500 '
+    tree_branch = fg("│   ", 241)  # u'\u2502   '
 
     # Get the list of all the files/dirs in the directory to nuke.
     # We traverse in a bottom up manner so that directory removal is trivial.
-    for (dirpath_str, dirnames, filenames) in os.walk(directory):
+    for (dirpath_str, dirnames, filenames) in os.walk(directory, topdown=False):
         level = dirpath_str.replace(str(directory), "").count(os.sep)
         if level > 0:
             indent = tree_branch * (level - 1) + file_link
@@ -74,16 +75,22 @@ def get_dirtree(directory):
             }
             element_list.append(element)
 
-        subindent = tree_branch * (level) + file_link
+        subindent = tree_branch * (level)
         # Add the files in the directory
-        for fn in filenames:
+        for idx, fn in enumerate(filenames):
             if fn == ".nukeignore":
                 ignore_patterns.extend(
                     parse_ignore_file((dirpath / fn), dirpath))
                 continue
 
+            # Check if it is the last element
+            if idx == len(filenames) - 1:
+                branch = subindent + last_file_link
+            else:
+                branch = subindent + file_link
+
             element = {
-                "repr": "{}{}".format(subindent, get_colorized(dirpath / fn)),
+                "repr": "{}{}".format(branch, get_colorized(dirpath / fn)),
                 "path": (dirpath / fn),
             }
             element_list.append(element)

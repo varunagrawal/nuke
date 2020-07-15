@@ -89,14 +89,14 @@ def test_nuke_list():
     output = sio.getvalue()
 
     # split output into separate lines
-    output = output.strip().split('\n')
+    output_lines = output.strip().split('\n')
 
-    expected_result = ("|—— another.py",
-                       "|—— random.py",
-                       "|—— test_subdir/",
-                       "|  |—— subfile.txt")
+    expected_result = ("├── test_subdir/",
+                       "│   └── subfile.txt",
+                       "├── another.py",
+                       "└── random.py")
 
-    for path in output:
+    for path in output_lines:
         assert path in expected_result
 
     # clean up the directory for the teardown
