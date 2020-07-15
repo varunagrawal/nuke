@@ -8,7 +8,7 @@ from pathlib import Path
 
 import crayons
 
-from .utils import parse_ignore_file
+from nuke.utils import parse_ignore_file
 
 
 def fg(text, color):

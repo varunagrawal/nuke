@@ -1,5 +1,15 @@
 ## Version History
 
+#### 2.4.4
+
+- Change the main entry file.
+- Add new modules to better organize code.
+- Pretty printing of deletion tree.
+
+#### 2.4.3
+
+Switched from `pipenv` to the much nicer `poetry`.
+
 #### 2.2.2
 
 Use of `pipenv` as default toolchain.
