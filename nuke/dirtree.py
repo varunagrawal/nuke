@@ -48,7 +48,7 @@ def get_dirtree(directory):
     ignore_patterns = []
 
     file_link = fg("├── ", 241)  # u'\u251c\u2500\u2500 '
-    last_file_link = fg("└── ", 259)  # u'\u2514\u2500\u2500 '
+    last_file_link = fg("└── ", 241)  # u'\u2514\u2500\u2500 '
     tree_branch = fg("│   ", 241)  # u'\u2502   '
 
     # Get the list of all the files/dirs in the directory to nuke.
