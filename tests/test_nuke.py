@@ -106,14 +106,19 @@ def test_nuke_list():
     # split output into separate lines
     output_lines = output.strip().split('\n')
 
-    expected_result = ("├── test_subdir/",
-                       "│   └── subfile.txt",
-                       "├── another.py",
-                       "└── random.py")
+    # Output should look something like this:
+    # ├── test_subdir/
+    # │   └── subfile.txt
+    # ├── another.py
+    # └── random.py
+    expected_result = ("test_subdir/",
+                       "subfile.txt",
+                       "another.py",
+                       "random.py")
 
-    #TODO test is failing on Travis so need to figure this out
-    # for path in output_lines:
-    #     assert path in expected_result
+    for path in output_lines:
+        p = path.replace("├── ", "").replace("└── ", "").replace("│   ", "")
+        assert p in expected_result
 
     # clean up the directory for the teardown
     nuke.nuke(TEST_DIR)
