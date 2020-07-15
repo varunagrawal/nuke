@@ -52,13 +52,28 @@ def test_ignore_file():
 
     nuke.nuke(TEST_DIR)
 
-    assert os.path.exists((TEST_DIR / 'ignore_file'))
+    assert (TEST_DIR / 'ignore_file').exists()
 
     os.remove((TEST_DIR / NUKEIGNORE))
     os.remove((TEST_DIR / 'ignore_file'))
 
 
 def test_ignore_directory():
+    with open((TEST_DIR / NUKEIGNORE), 'w') as ni:
+        ni.write("ignore_dir")
+
+    open((TEST_DIR / 'ignore_dir' / 'file_inside_ignore_dir'), 'a').close()
+    nuke.nuke(TEST_DIR)
+
+    assert (TEST_DIR / 'ignore_dir').exists()
+    assert (TEST_DIR / 'ignore_dir' / 'file_inside_ignore_dir').exists()
+
+    # remove the whole directory in one fell swoop
+    shutil.rmtree((TEST_DIR / 'ignore_dir'))
+    os.remove((TEST_DIR / NUKEIGNORE))
+
+
+def test_ignore_directory_with_slash():
     with open((TEST_DIR / NUKEIGNORE), 'w') as ni:
         ni.write("ignore_dir/")
     open((TEST_DIR / 'ignore_dir' / 'file_inside_ignore_dir'), 'a').close()

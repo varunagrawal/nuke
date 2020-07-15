@@ -21,17 +21,20 @@ def parse_ignore_file(filename, dirname):
             if x == "" or x[0] == "#":
                 continue
 
-            pattern = str(dirname / x)
+            path = dirname / x
+
+            pattern = str(path)
+
             # check if pattern is a directory
-            if x[-1] == "/":
+            # this is a little hack to make sure directories and their contents are included
+            # since fnmatch only matches filenames and not directory contents directly.
+            if path.is_dir():
                 pattern += "/"
 
-            # little hack to make sure directories and their contents are included
-            # since fnmatch only matches filenames and not directory contents directly.
-            if pattern[-1] == "/":  # we have a directory
                 # add the pattern without the trailing slash to match the directory
                 ignore_list.append(pattern[:-1])
                 pattern += "*"  # create pattern for all paths inside directory
+
             ignore_list.append(pattern)
 
     return ignore_list
