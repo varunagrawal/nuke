@@ -6,16 +6,17 @@ authors = ["Varun Agrawal <varagrawal@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.6"
+python = ">=3.6.3,<4.0.0"
 click = ">=6.7"
 args = ">=0.1.0"
 colorama = ">=0.4.1"
 crayons = ">=0.1.2"
 pluggy = ">=0.7.0"
 py = ">=1.4.34"
+rich = "^12.6.0"
 
 [tool.poetry.dev-dependencies]
-tox = "^3.16.1"
+tox = "^3.27.0"
 pypandoc = ">=1.4"
 
 [build-system]
