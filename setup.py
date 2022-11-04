@@ -1,14 +1,13 @@
 """
 Command line tool for nuking a directory..
 """
-from setuptools import find_packages, setup
 from os import path
+
+from setuptools import find_packages, setup
+
 import nuke
 
-dependencies = [
-    "click>=7.0",
-    "crayons>=0.3.0"
-]
+dependencies = ["click>=7.0", "crayons>=0.3.0"]
 
 here = path.abspath(path.dirname(__file__))
 
@@ -52,5 +51,4 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Topic :: Software Development :: Libraries :: Python Modules',
-    ]
-)
+    ])

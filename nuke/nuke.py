@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """Main command line tool to nuke a directory."""
 
 # pylint: disable=invalid-name,unused-variable
@@ -35,7 +34,8 @@ def get_file_list(directory):
 
         for fn in filenames:
             if fn == ".nukeignore":
-                ignore_patterns.extend(parse_ignore_file((dirpath / fn), dirpath))
+                ignore_patterns.extend(
+                    parse_ignore_file((dirpath / fn), dirpath))
                 continue
             file_list.append((dirpath / fn))
 
@@ -51,7 +51,9 @@ def ignore_paths(path_list, ignore_patterns, process=str):
     :return: The updated path list
     """
     for pattern in ignore_patterns:
-        path_list = [n for n in path_list if not fnmatch.fnmatch(process(n), pattern)]
+        path_list = [
+            n for n in path_list if not fnmatch.fnmatch(process(n), pattern)
+        ]
     return path_list
 
 
@@ -65,7 +67,8 @@ def list_files_tree(directory):
     file_list, ignore_patterns = get_dirtree(directory)
 
     # Filter the nuke list based on the ignore patterns.
-    file_list = ignore_paths(file_list, ignore_patterns, lambda x: str(x["path"]))
+    file_list = ignore_paths(file_list, ignore_patterns,
+                             lambda x: str(x["path"]))
 
     # Get the indented filenames only for printing
     file_tree = [str(x["repr"]) for x in file_list]
@@ -84,8 +87,13 @@ def delete(x):
     if x.is_dir():
         # delete the directory
         try:
-            x.rmdir()
-        except (OSError,):
+            # Check if directory is a symbolic link
+            if x.is_symlink():
+                x.unlink()
+            else:
+                # Just a regular delete
+                x.rmdir()
+        except (OSError, ):
             # This means the directory is not empty, so do nothing.
             # Possibly because an nukeignored file is in the directory.
             return
@@ -112,25 +120,29 @@ def nuke(directory):
             try:
                 delete(x)
 
-            except (OSError,) as ex:
+            except (OSError, ) as ex:
                 # file does not exist
                 if ex.errno == errno.ENOENT:
                     click.secho("Nuke target does not exist...", fg="red")
                 else:
                     click.secho(
-                        "File exception {0}: {1}!".format(ex.errno, ex.strerror),
+                        "File exception {0}: {1}!".format(
+                            ex.errno, ex.strerror),
                         fg="red",
                     )
 
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
 @click.argument("directory", nargs=1, default=Path.cwd())
-@click.option(
-    "-l", is_flag=True, default=False, help="List all the files that will be nuked"
-)
-@click.option(
-    "-y", is_flag=True, is_eager=True, default=False, help="Flag to confirm nuking"
-)
+@click.option("-l",
+              is_flag=True,
+              default=False,
+              help="List all the files that will be nuked")
+@click.option("-y",
+              is_flag=True,
+              is_eager=True,
+              default=False,
+              help="Flag to confirm nuking")
 def main(directory, l, y):
     """
     Nuke (aka delete the contents of) the DIRECTORY specified.
@@ -141,16 +153,17 @@ def main(directory, l, y):
         directory = Path(directory).expanduser().resolve(strict=True)
     except FileNotFoundError:
         click.secho(
-            "Invalid directory specified. Please ensure directory is valid.", fg="red"
-        )
+            "Invalid directory specified. Please ensure directory is valid.",
+            fg="red")
 
     if l:
         list_files_tree(directory=directory)
         return
     if y or click.confirm(
-        "Are you sure you want to nuke directory " + crayons.blue(directory) + "?",
-        default=True,  # sets the prompt to Y/n
-        abort=False,
+            "Are you sure you want to nuke directory " +
+            crayons.blue(directory) + "?",
+            default=True,  # sets the prompt to Y/n
+            abort=False,
     ):
         nuke(directory)
 

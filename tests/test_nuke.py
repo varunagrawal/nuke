@@ -2,9 +2,11 @@
 
 # pylint: disable=invalid-name,unused-variable,unused-import,missing-docstring
 
+import io
 import os
-from pathlib import Path
 import shutil
+from contextlib import redirect_stdout
+from pathlib import Path
 
 import pytest
 from nuke import nuke
@@ -18,7 +20,7 @@ def setup():
     """Invoked each time before running a test."""
     try:
         TEST_DIR.mkdir()
-    except (FileExistsError,):
+    except (FileExistsError, ):
         # if the test directory already exists then just continue.
         pass
 
@@ -26,6 +28,9 @@ def setup():
     open((TEST_DIR / "another.py"), 'a').close()
     (TEST_DIR / 'ignore_dir').mkdir()
     open((TEST_DIR / 'ignore_file'), 'a').close()
+    open((TEST_DIR / 'ignore_file'), 'a').close()
+    Path(TEST_DIR / "symlink_file").symlink_to(TEST_DIR / "random.py")
+    Path(TEST_DIR / "symlink_dir").symlink_to(TEST_DIR / "ignore_dir")
 
 
 def test_nuke_dir():
@@ -95,9 +100,6 @@ def test_nuke_list():
     with open((TEST_DIR / NUKEIGNORE), 'w') as ni:
         ni.writelines('\n'.join(["ignore_dir/", 'ignore_file']))
 
-    import io
-    from contextlib import redirect_stdout
-
     sio = io.StringIO()
     with redirect_stdout(sio):
         nuke_files = nuke.list_files_tree(TEST_DIR)
@@ -111,10 +113,8 @@ def test_nuke_list():
     # │   └── subfile.txt
     # ├── another.py
     # └── random.py
-    expected_result = ("test_subdir/",
-                       "subfile.txt",
-                       "another.py",
-                       "random.py")
+    expected_result = ("test_subdir/", "subfile.txt", "another.py",
+                       "random.py", "symlink_file", "symlink_dir")
 
     for path in output_lines:
         p = path.replace("├── ", "").replace("└── ", "").replace("│   ", "")
