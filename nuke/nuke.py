@@ -11,6 +11,7 @@ from pathlib import Path
 
 import click
 import crayons
+from rich.progress import track
 
 from .dirtree import get_dirtree
 from .utils import parse_ignore_file
@@ -115,21 +116,19 @@ def nuke(directory):
     # Filter the file list based on the ignore patterns.
     nuke_list = ignore_paths(file_list, ignore_patterns)
 
-    with click.progressbar(nuke_list, length=len(nuke_list)) as nuke_l:
-        for x in nuke_l:
-            try:
-                delete(x)
+    for x in track(nuke_list):
+        try:
+            delete(x)
 
-            except (OSError, ) as ex:
-                # file does not exist
-                if ex.errno == errno.ENOENT:
-                    click.secho("Nuke target does not exist...", fg="red")
-                else:
-                    click.secho(
-                        "File exception {0}: {1}!".format(
-                            ex.errno, ex.strerror),
-                        fg="red",
-                    )
+        except (OSError, ) as ex:
+            # file does not exist
+            if ex.errno == errno.ENOENT:
+                click.secho("Nuke target does not exist...", fg="red")
+            else:
+                click.secho(
+                    "File exception {0}: {1}!".format(ex.errno, ex.strerror),
+                    fg="red",
+                )
 
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
