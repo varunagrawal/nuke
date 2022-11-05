@@ -6,7 +6,7 @@ authors = ["Varun Agrawal <varagrawal@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.6.3,<4.0.0"
+python = ">=3.7,<4.0.0"
 click = ">=6.7"
 args = ">=0.1.0"
 colorama = ">=0.4.1"
