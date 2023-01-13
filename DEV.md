@@ -10,15 +10,14 @@ The tests go in the `tests` directory which contains python files with test code
 
 ## Dependencies
 
-The following dependencies are required to develop for `nuke`. They can be installed together using `pipenv`
+The following dependencies are required to develop for `nuke`. They can be installed together using `poetry`
 
 ```shell
-pipenv install
+poetry install
 ```
 
-- pipenv
 - click
-- args
+- rich
 - colorama
 - tox
 
@@ -28,15 +27,15 @@ pipenv install
 
 ```shell
 # runs all the tests against Python 3.6, 3.7 & 3.8
-tox  
+tox
 
 # test only against Python 3.6
-tox -e 36  
+tox -e 36
 ```
 
 ## Makefile
 
-There is also a `Makefile` set up to ease various repetitive tasks. 
+There is also a `Makefile` set up to ease various repetitive tasks.
 
 - Default: The default `make` command runs the `tox` tests.
 - `make submit`: This packages and submits the latest version of the code to PyPI (only maintainer accessible).
