@@ -1,11 +1,11 @@
 dist: bionic
 language: python
 python:
-  - "3.6"
   - "3.7"
   - "3.8"
+  - "3.9"
 install:
   - "sudo apt-get install pandoc"
-  - "pip install tox-travis pipenv --upgrade"
-  - "pipenv install"
+  - "pip install tox-travis poetry --upgrade"
+  - "poetry install"
 script: tox

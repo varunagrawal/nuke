@@ -9,6 +9,7 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 import pytest
+
 from nuke import nuke
 
 NUKEIGNORE = Path('.nukeignore')
