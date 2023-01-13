@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nuke"
-version = "2.4.3"
+version = "2.5.2"
 description = "Command line tool for nuking a directory 💥"
 authors = ["Varun Agrawal <varagrawal@gmail.com>"]
 license = "MIT"
@@ -8,11 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0.0"
 click = ">=6.7"
-args = ">=0.1.0"
-colorama = ">=0.4.1"
 crayons = ">=0.1.2"
-pluggy = ">=0.7.0"
-py = ">=1.4.34"
 rich = "^12.6.0"
 
 [tool.poetry.dev-dependencies]
