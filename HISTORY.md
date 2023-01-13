@@ -1,5 +1,13 @@
 ## Version History
 
+#### 2.5.2
+
+Clean up dependencies.
+
+#### 2.5.1
+
+Use `rich` for nicer progress bars.
+
 #### 2.4.5
 
 Fix bug with matching directories without trailing slash.
