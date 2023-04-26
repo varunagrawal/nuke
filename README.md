@@ -5,7 +5,8 @@
 [![license](https://img.shields.io/pypi/l/nuke.svg)](https://pypi.python.org/pypi/nuke)
 [![wheel](https://img.shields.io/pypi/wheel/nuke.svg)](https://pypi.python.org/pypi/nuke)
 [![python](https://img.shields.io/pypi/pyversions/nuke.svg)](https://pypi.python.org/pypi/nuke)
-[![Build Status](https://travis-ci.org/varunagrawal/nuke.svg?branch=master)](https://travis-ci.org/varunagrawal/nuke)
+[![CI](https://github.com/varunagrawal/nuke/actions/workflows/ci.yml/badge.svg)](https://github.com/varunagrawal/nuke/actions/workflows/ci.yml)
+
 [![say-thanks](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/varunagrawal)
 
 Command line tool for nuking a directory 💥.
@@ -17,7 +18,7 @@ Installing `nuke` is intended to be super easy. The only dependency is a support
 ```shell
 $ pip install nuke
 ```
-`nuke` is supported for Python 3.6+.
+`nuke` is supported for Python 3.7+.
 
 
 ## Usage

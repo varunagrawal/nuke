@@ -1,6 +1,6 @@
 [project]
 name = "nuke"
-version = "2.5.3"
+version = "2.5.4"
 authors = [
   { name="Varun Agrawal", email="varagrawal@gmail.com" },
 ]
@@ -42,7 +42,7 @@ build-backend = "hatchling.build"
 
 [tool.poetry]
 name = "nuke"
-version = "2.5.3"
+version = "2.5.4"
 description = "Command line tool for nuking a directory 💥"
 authors = ["Varun Agrawal <varagrawal@gmail.com>"]
 license = "MIT"
