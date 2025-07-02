@@ -1,3 +1,5 @@
+# Use tox-gh to test against multiple python versions concurrently
+
 name: CI
 
 on:
@@ -5,28 +7,38 @@ on:
   - pull_request
 
 jobs:
-  build:
-    name: Tests for ${{ matrix.python-version }}
+  test:
+    name: Tests for ${{ matrix.env }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        env:
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v3
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install -U pip
-          python -m pip install tox tox-gh-actions
+      - name: Install tox
+        run: uv tool install --python-preference only-managed --python 3.13 tox --with tox-uv --with tox-gh
 
-      - name: Test
-        run: tox
+      - name: Install Python
+        if: matrix.env != '3.13'
+        run: uv python install --python-preference only-managed ${{ matrix.env }}
+
+      - name: Setup test suite
+        run: tox run -vv --notest --skip-missing-interpreters false
+        env:
+          TOX_GH_MAJOR_MINOR: ${{ matrix.env }}
+      - name: Run test suite
+        run: tox run --skip-pkg-install
+        env:
+          TOX_GH_MAJOR_MINOR: ${{ matrix.env }}
