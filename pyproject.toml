@@ -34,7 +34,7 @@ text = "MIT"
 
 [project.urls]
 Homepage = "https://github.com/varunagrawal/nuke"
-"Bug Tracker" = "https://github.com/varunagrawal/nuke/issues"
+Issues = "https://github.com/varunagrawal/nuke/issues"
 
 [project.scripts]
 nuke = "nuke.nuke:main"
@@ -48,7 +48,6 @@ dev = [
     "pyfakefs>=5.8.0",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
-    "tox>=3.27.0",
     "pypandoc>=1.4",
     "ruff>=0.11.8",
 ]
@@ -58,3 +57,11 @@ universal = true
 
 [tool.pytest.ini_options]
 addopts = "--verbose -vv --cov=nuke"
+
+[tool.tox]
+env_list = ["3.10","3.11","3.12","3.13"]
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+commands = [["pytest"]]
+runner = "uv-venv-lock-runner"  # Use uv.lock
