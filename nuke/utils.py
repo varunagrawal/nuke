@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """Utilities module."""
 
+from pathlib import Path
+from typing import List
 
-def parse_ignore_file(filename, dirname):
+
+def parse_ignore_file(filename: str, dirname: Path) -> List[str]:
     """
     Parse the ignore file and return a list of ignore patterns.
     Each pattern has the complete file path so we can take into account ignore at different levels.

@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """Utilities for getting directory tree."""
 
 import os
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 import crayons
 
 from nuke.utils import parse_ignore_file
 
 
-def fg(text, color):
+def fg(text: str, color) -> str:
     """Set text to foregound color."""
     return "\33[38;5;" + str(color) + "m" + text + "\33[0m"
 
 
-def bg(text, color):
+def bg(text: str, color) -> str:
     """Set text to background color."""
     return "\33[48;5;" + str(color) + "m" + text + "\33[0m"
 
@@ -38,11 +38,11 @@ def get_colorized(path: Path):
         return crayons.white(name)
 
 
-def get_dirtree(directory):
+def get_dirtree(directory: Path) -> Tuple[List[Dict[str, Any]], List[str]]:
     """
     Get the directory tree of the `directory`.
     :param directory: The root directory from where to generate the directory tree.
-    :return: The list of paths with appropriate indenting
+    :return: The list of paths with appropriate indenting, and the list of ignore patterns.
     """
     element_list = []
     ignore_patterns = []
@@ -53,7 +53,7 @@ def get_dirtree(directory):
 
     # Get the list of all the files/dirs in the directory to nuke.
     # We traverse in a bottom up manner so that directory removal is trivial.
-    for (dirpath_str, dirnames, filenames) in os.walk(directory, topdown=False):
+    for (dirpath_str, _, filenames) in os.walk(directory, topdown=False):
         level = dirpath_str.replace(str(directory), "").count(os.sep)
         if level > 0:
             indent = tree_branch * (level - 1) + file_link
@@ -70,7 +70,7 @@ def get_dirtree(directory):
         if ".nukeignore" not in filenames:
             # Add the current directory
             element = {
-                "repr": "{}{}/".format(indent, get_colorized(dirpath)),
+                "repr": f"{indent}{get_colorized(dirpath)}/",
                 "path": dirpath,
             }
             element_list.append(element)
@@ -90,7 +90,7 @@ def get_dirtree(directory):
                 branch = subindent + file_link
 
             element = {
-                "repr": "{}{}".format(branch, get_colorized(dirpath / fn)),
+                "repr": f"{branch}{ get_colorized(dirpath / fn)}",
                 "path": (dirpath / fn),
             }
             element_list.append(element)

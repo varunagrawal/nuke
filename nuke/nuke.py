@@ -8,6 +8,7 @@ import errno
 import fnmatch
 import os
 from pathlib import Path
+from typing import Any, Callable, Dict, List, Tuple
 
 import click
 import crayons
@@ -17,7 +18,7 @@ from .dirtree import get_dirtree
 from .utils import parse_ignore_file
 
 
-def get_file_list(directory):
+def get_file_list(directory: Path) -> Tuple[List[Path], List[str]]:
     """
     Retrieve all the files in the directory tree that are to be nuked,
     as well as the list of file patterns to ignore.
@@ -43,22 +44,26 @@ def get_file_list(directory):
     return file_list, ignore_patterns
 
 
-def ignore_paths(path_list, ignore_patterns, process=str):
+def ignore_paths(
+    path_list: List[Dict[str, Any]],
+    ignore_patterns: List[str],
+    processor: Callable = str,
+) -> List[Dict[str, Any]]:
     """
     Go through the `path_list` and ignore any paths that match the patterns in `ignore_patterns`
     :param path_list: List of file/directory paths.
     :param ignore_patterns: List of nukeignore patterns.
-    :param process: Function to apply to every element in the path list before performing match.
+    :param processor: Function to apply to every element in the path list before performing match.
     :return: The updated path list
     """
     for pattern in ignore_patterns:
         path_list = [
-            n for n in path_list if not fnmatch.fnmatch(process(n), pattern)
+            n for n in path_list if not fnmatch.fnmatch(processor(n), pattern)
         ]
     return path_list
 
 
-def list_files_tree(directory):
+def list_files_tree(directory: Path) -> List[Dict[str, Any]]:
     """
     List all the files to be nuked in a nice directory tree.
     :param directory: The root directory to list from.
@@ -80,7 +85,7 @@ def list_files_tree(directory):
     return file_list
 
 
-def delete(x):
+def delete(x: Path) -> None:
     """
     Convenience method to delete file or directory.
     :param x: The filesystem object to delete.
@@ -104,7 +109,7 @@ def delete(x):
         x.unlink()
 
 
-def nuke(directory):
+def nuke(directory: Path) -> None:
     """This is where all the nuking happens."""
     click.echo("Nuking " + crayons.cyan(directory))
 
@@ -126,7 +131,7 @@ def nuke(directory):
                 click.secho("Nuke target does not exist...", fg="red")
             else:
                 click.secho(
-                    "File exception {0}: {1}!".format(ex.errno, ex.strerror),
+                    f"File exception {ex.errno}: {ex.strerror}!",
                     fg="red",
                 )
 
@@ -142,7 +147,7 @@ def nuke(directory):
               is_eager=True,
               default=False,
               help="Flag to confirm nuking")
-def main(directory, l, y):
+def main(directory: str, l: bool, y: bool):
     """
     Nuke (aka delete the contents of) the DIRECTORY specified.
     Default directory is the current directory.
