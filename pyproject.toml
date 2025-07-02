@@ -1,6 +1,6 @@
 [project]
 name = "nuke"
-version = "2.6.0"
+version = "2.6.1"
 authors = [
   { name="Varun Agrawal", email="varagrawal@gmail.com" },
 ]
@@ -50,6 +50,7 @@ dev = [
     "pytest-cov>=6.1.1",
     "pypandoc>=1.4",
     "ruff>=0.11.8",
+    "poethepoet>=0.36.0",
 ]
 
 [tool.pytest.ini_options]
@@ -62,3 +63,10 @@ env_list = ["3.10","3.11","3.12","3.13"]
 description = "Run test under {base_python}"
 commands = [["pytest"]]
 runner = "uv-venv-lock-runner"  # Use uv.lock
+
+[tool.poe.tasks]
+test = "pytest"
+tox = "uv tool run tox -p"
+package = "uv build"
+_publish = "uv publish"
+publish = ["package", "_publish"]
