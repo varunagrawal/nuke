@@ -52,9 +52,6 @@ dev = [
     "ruff>=0.11.8",
 ]
 
-[tool.distutils.bdist_wheel]
-universal = true
-
 [tool.pytest.ini_options]
 addopts = "--verbose -vv --cov=nuke"
 
