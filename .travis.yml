@@ -1,11 +1,12 @@
 dist: bionic
 language: python
 python:
-  - "3.7"
-  - "3.8"
-  - "3.9"
+  - "3.10"
+  - "3.11"
+  - "3.12"
+  - "3.13"
 install:
   - "sudo apt-get install pandoc"
-  - "pip install tox-travis poetry --upgrade"
-  - "poetry install"
-script: tox
+  - "pip install tox-travis uv --upgrade"
+  - "uv sync"
+script: "uv run poe tox"
