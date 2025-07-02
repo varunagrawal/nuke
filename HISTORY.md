@@ -1,5 +1,9 @@
 ## Version History
 
+#### 2.6.0
+
+Switch to `uv` for package management.
+
 #### 2.5.2
 
 Clean up dependencies.

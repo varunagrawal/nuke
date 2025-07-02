@@ -10,10 +10,11 @@ The tests go in the `tests` directory which contains python files with test code
 
 ## Dependencies
 
-The following dependencies are required to develop for `nuke`. They can be installed together using `poetry`
+The following dependencies are required to develop for `nuke`. They can be installed together using `uv`
 
 ```shell
-poetry install
+uv sync
+uv tool install tox --with tox-uv
 ```
 
 - click
@@ -23,19 +24,23 @@ poetry install
 
 ## Running Tests
 
-`tox` is currently set up to read the tests from the `tests` directory and as such, one only needs to run the `tox` command.
+We use `poe` as a convenient action runner to ease various repetitive tasks.
 
+To run tests, we can use
 ```shell
-# runs all the tests against Python 3.7, 3.8, 3.9, 3.10 & 3.11
-tox
-
-# test only against Python 3.7
-tox -e 37
+uv run poe test
 ```
 
-## Makefile
+For multiple python versions, `tox` is currently set up to read the tests from the `tests` directory and as such, we can as `poe` to run the tests.
 
-There is also a `Makefile` set up to ease various repetitive tasks.
+```shell
+# runs all the tests against supported Python versions
+uv run poe tox
+```
 
-- Default: The default `make` command runs the `tox` tests.
-- `make submit`: This packages and submits the latest version of the code to PyPI (only maintainer accessible).
+## Publishing
+
+We can once again use `poe` to help with publishing:
+```shell
+uv run poe publish
+```
