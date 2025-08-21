@@ -14,8 +14,8 @@ import click
 import crayons
 from rich.progress import track
 
-from .dirtree import get_dirtree
-from .utils import parse_ignore_file
+from nuke.dirtree import get_dirtree
+from nuke.utils import parse_ignore_file
 
 
 def get_file_list(directory: Path) -> Tuple[List[Path], List[str]]:
@@ -135,44 +135,3 @@ def nuke(directory: Path) -> None:
                     f"File exception {ex.errno}: {ex.strerror}!",
                     fg="red",
                 )
-
-
-@click.command(context_settings={"help_option_names": ["-h", "--help"]})
-@click.argument("directory", nargs=1, default=Path.cwd())
-@click.option("-l",
-              is_flag=True,
-              default=False,
-              help="List all the files that will be nuked")
-@click.option("-y",
-              is_flag=True,
-              is_eager=True,
-              default=False,
-              help="Flag to confirm nuking")
-def main(directory: str, list_files: bool, y: bool):
-    """
-    Nuke (aka delete the contents of) the DIRECTORY specified.
-    Default directory is the current directory.
-    """
-    try:
-        # expand and resolve the input directory path
-        directory = Path(directory).expanduser().resolve(strict=True)
-    except FileNotFoundError:
-        click.secho(
-            "Invalid directory specified. Please ensure directory is valid.",
-            fg="red")
-
-    if list_files:
-        list_files_tree(directory=directory)
-        return
-
-    if y or click.confirm(
-            "Are you sure you want to nuke directory " +
-            crayons.blue(directory) + "?",
-            default=True,  # sets the prompt to Y/n
-            abort=False,
-    ):
-        nuke(directory)
-
-
-if __name__ == "__main__":
-    main(os.getcwd(), False, False)

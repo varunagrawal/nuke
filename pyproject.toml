@@ -37,7 +37,7 @@ Homepage = "https://github.com/varunagrawal/nuke"
 Issues = "https://github.com/varunagrawal/nuke/issues"
 
 [project.scripts]
-nuke = "nuke.nuke:main"
+nuke = "nuke.cli:main"
 
 [build-system]
 requires = ["hatchling"]
