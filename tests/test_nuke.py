@@ -15,8 +15,8 @@ from nuke import nuke
 NUKEIGNORE = Path('.nukeignore')
 
 
-@pytest.fixture
-def test_directory():
+@pytest.fixture(name="directory")
+def directory_fixture():
     """Invoked each time before running a test."""
     TEST_DIR = Path("test_directory")
     try:
@@ -39,68 +39,66 @@ def test_directory():
     shutil.rmtree(TEST_DIR)
 
 
-def test_nuke_dir(test_directory):
-    nuke.nuke(test_directory)
-    assert os.listdir(test_directory) == []
+def test_nuke_dir(directory):
+    nuke.nuke(directory)
+    assert os.listdir(directory) == []
 
 
-def test_nuke_current_dir(test_directory):
-    directory = (Path.cwd() / test_directory)
+def test_nuke_current_dir(directory):
+    directory = Path.cwd() / directory
     os.chdir(directory)
     nuke.nuke(Path.cwd())
     assert os.listdir(".") == []
     os.chdir("..")
 
 
-def test_invalid_dir(test_directory):
-    nuke.nuke(test_directory)
+def test_invalid_dir(directory):
+    nuke.nuke(directory)
     nuke.nuke("invalid_dir")
 
 
-def test_ignore_file(test_directory):
-    with open((test_directory / NUKEIGNORE), 'w') as ni:
+def test_ignore_file(directory):
+    with open((directory / NUKEIGNORE), 'w') as ni:
         ni.write("ignore_file")
 
-    nuke.nuke(test_directory)
+    nuke.nuke(directory)
 
-    assert (test_directory / 'ignore_file').exists()
+    assert (directory / 'ignore_file').exists()
 
 
-def test_ignore_directory(test_directory):
-    with open((test_directory / NUKEIGNORE), 'w') as ni:
+def test_ignore_directory(directory):
+    with open((directory / NUKEIGNORE), 'w') as ni:
         ni.write("ignore_dir")
 
-    open((test_directory / 'ignore_dir' / 'file_inside_ignore_dir'),
-         'a').close()
-    nuke.nuke(test_directory)
+    open((directory / 'ignore_dir' / 'file_inside_ignore_dir'), 'a').close()
+    nuke.nuke(directory)
 
-    assert (test_directory / 'ignore_dir').exists()
-    assert (test_directory / 'ignore_dir' / 'file_inside_ignore_dir').exists()
+    assert (directory / 'ignore_dir').exists()
+    assert (directory / 'ignore_dir' / 'file_inside_ignore_dir').exists()
 
 
-def test_ignore_directory_with_slash(test_directory):
-    with open((test_directory / NUKEIGNORE), 'w') as ni:
+def test_ignore_directory_with_slash(directory):
+    with open((directory / NUKEIGNORE), 'w') as ni:
         ni.write("ignore_dir/")
 
-    open((test_directory / 'ignore_dir' / 'file_inside_ignore_dir'),
-         'a').close()
-    nuke.nuke(test_directory)
+    open((directory / 'ignore_dir' / 'file_inside_ignore_dir'), 'a').close()
+    nuke.nuke(directory)
 
-    assert (test_directory / 'ignore_dir').exists()
-    assert (test_directory / 'ignore_dir' / 'file_inside_ignore_dir').exists()
+    assert (directory / 'ignore_dir').exists()
+    assert (directory / 'ignore_dir' / 'file_inside_ignore_dir').exists()
 
 
-def test_nuke_list(test_directory):
-    os.mkdir((test_directory / 'test_subdir'))
-    open((test_directory / 'test_subdir' / "subfile.txt"), 'a').close()
+def test_nuke_list(directory):
+    os.mkdir((directory / 'test_subdir'))
+    open((directory / 'test_subdir' / "subfile.txt"), 'a').close()
 
     # Create the nukeignore file
-    with open((test_directory / NUKEIGNORE), 'w') as ni:
+    with open((directory / NUKEIGNORE), 'w') as ni:
         ni.writelines('\n'.join(["ignore_dir/", 'ignore_file']))
 
     sio = io.StringIO()
     with redirect_stdout(sio):
-        nuke_files = nuke.list_files_tree(test_directory)
+        nuke_files = nuke.list_files_tree(directory)
     output = sio.getvalue()
 
     # split output into separate lines
@@ -119,4 +117,4 @@ def test_nuke_list(test_directory):
         assert p in expected_result
 
     # clean up the directory for the teardown
-    nuke.nuke(test_directory)
+    nuke.nuke(directory)
