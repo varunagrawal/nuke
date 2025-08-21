@@ -1,0 +1,11 @@
+{
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+    },
+  },
+  // Needed to ensure VSCode's coverage report is accurate. NOTE: Need to comment out to get breakpointing to work.
+  "python.testing.pytestArgs": [
+    "--cov=nuke"
+  ],
+}
