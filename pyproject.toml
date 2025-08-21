@@ -1,6 +1,6 @@
 [project]
 name = "nuke"
-version = "2.6.1"
+version = "2.6.2"
 authors = [
   { name="Varun Agrawal", email="varagrawal@gmail.com" },
 ]
@@ -45,16 +45,14 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "pyfakefs>=5.8.0",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
-    "pypandoc>=1.4",
     "ruff>=0.11.8",
     "poethepoet>=0.36.0",
 ]
 
 [tool.pytest.ini_options]
-addopts = "--verbose -vv --cov=nuke --cov-report term --cov-report xml:coverage.xml"
+addopts = "--verbose -vv"
 
 [tool.tox]
 env_list = ["3.10","3.11","3.12","3.13"]
