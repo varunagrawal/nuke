@@ -3,6 +3,35 @@
 from pathlib import Path
 from typing import List
 
+import crayons
+
+
+def fg(text: str, color) -> str:
+    """Set text to foregound color."""
+    return f"\33[38;5;{color}m{text}\33[0m"
+
+
+def bg(text: str, color) -> str:
+    """Set text to background color."""
+    return f"\33[48;5;{color}m{text}\33[0m"
+
+
+def get_colorized(path: Path):
+    """Colorize path name based on type."""
+    name = path.name
+    if path.is_dir():
+        return crayons.blue(name)
+    elif path.is_file():
+        return crayons.green(name)
+    elif path.is_mount():  # pragma: no cover
+        return crayons.red(name)
+    elif path.is_symlink():
+        return crayons.cyan(name)
+    elif path.is_socket():  # pragma: no cover
+        return crayons.magenta(name)
+    else:  # pragma: no cover
+        return crayons.white(name)
+
 
 def parse_ignore_file(filename: str, dirname: Path) -> List[str]:
     """

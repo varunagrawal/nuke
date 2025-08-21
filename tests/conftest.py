@@ -1,3 +1,5 @@
+"""Common test fixtures."""
+
 import shutil
 from pathlib import Path
 

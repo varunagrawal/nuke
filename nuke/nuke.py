@@ -85,14 +85,11 @@ def list_files_tree(directory: Path) -> List[Dict[str, Any]]:
     return file_list
 
 
-def delete(x: Path) -> bool:
+def delete(x: Path) -> None:
     """Convenience method to delete file or directory.
 
     Args:
         x (Path): The filesystem object to delete.
-
-    Returns:
-        bool: Return True if path was successfully deleted, else False.
     """
     if x.is_dir():
         # delete the directory
@@ -100,14 +97,27 @@ def delete(x: Path) -> bool:
             x.rmdir()
         except (OSError, ):
             # This means the directory is not empty, so do nothing.
-            # Possibly because an `nukeignore`d file is in the directory.
-            return False
+            # Possibly because a `nukeignore`d file is in the directory.
+            click.secho(
+                f"Directory {x} is not empty, perhaps there is an ignored file in it?",
+                fg="red",
+            )
+            return
 
     else:
-        # delete the file
-        x.unlink()
+        try:
+            # delete the file
+            x.unlink()
 
-    return True
+        except (OSError, ) as ex:
+            # file does not exist
+            if ex.errno == errno.ENOENT:
+                click.secho("Nuke target does not exist...", fg="red")
+            else:  # pragma: no cover
+                click.secho(
+                    f"File exception {ex.errno}: {ex.strerror}!",
+                    fg="red",
+                )
 
 
 def nuke(directory: Path) -> None:
@@ -123,15 +133,4 @@ def nuke(directory: Path) -> None:
     nuke_list = ignore_paths(file_list, ignore_patterns)
 
     for x in track(nuke_list):
-        try:
-            delete(x)
-
-        except (OSError, ) as ex:
-            # file does not exist
-            if ex.errno == errno.ENOENT:
-                click.secho("Nuke target does not exist...", fg="red")
-            else:
-                click.secho(
-                    f"File exception {ex.errno}: {ex.strerror}!",
-                    fg="red",
-                )
+        delete(x)

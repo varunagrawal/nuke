@@ -4,11 +4,8 @@
 
 import io
 import os
-import shutil
 from contextlib import redirect_stdout
 from pathlib import Path
-
-import pytest
 
 from nuke import nuke
 
@@ -38,6 +35,12 @@ def test_nuke_current_dir(directory):
     nuke.nuke(Path.cwd())
     assert os.listdir(".") == []
     os.chdir("..")
+
+
+def test_invalid_file(directory, capsys):
+    nuke.delete(directory / "this_file_doesnt.exist")
+    captured = capsys.readouterr()
+    assert captured.out == "Nuke target does not exist...\n"
 
 
 def test_invalid_dir(directory):
@@ -86,7 +89,7 @@ def test_nuke_list(directory):
 
     sio = io.StringIO()
     with redirect_stdout(sio):
-        nuke_files = nuke.list_files_tree(directory)
+        nuke.list_files_tree(directory)
     output = sio.getvalue()
 
     # split output into separate lines

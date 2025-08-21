@@ -6,36 +6,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-import crayons
-
-from nuke.utils import parse_ignore_file
-
-
-def fg(text: str, color) -> str:
-    """Set text to foregound color."""
-    return "\33[38;5;" + str(color) + "m" + text + "\33[0m"
-
-
-def bg(text: str, color) -> str:
-    """Set text to background color."""
-    return "\33[48;5;" + str(color) + "m" + text + "\33[0m"
-
-
-def get_colorized(path: Path):
-    """Colorize path name based on type."""
-    name = path.name
-    if path.is_dir():
-        return crayons.blue(name)
-    elif path.is_file():
-        return crayons.green(name)
-    elif path.is_mount():
-        return crayons.red(name)
-    elif path.is_symlink():
-        return crayons.cyan(name)
-    elif path.is_socket():
-        return crayons.magenta(name)
-    else:
-        return crayons.white(name)
+from nuke.utils import fg, get_colorized, parse_ignore_file
 
 
 def get_dirtree(directory: Path) -> Tuple[List[Dict[str, Any]], List[str]]:
