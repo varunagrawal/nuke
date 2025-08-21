@@ -1,5 +1,7 @@
 """Unit tests for the CLI entry point."""
 
+import sys
+
 from click.testing import CliRunner
 
 from nuke.cli import main
@@ -25,7 +27,19 @@ def test_list_files(directory):
     result = runner.invoke(main, [str(directory), "-l", "-y"])
 
     assert result.exit_code == 0
-    expected_output = """├── ignore_dir/
+
+    if sys.platform == "linux":
+        expected_output = """├── ignore_dir/
+test_directory/
+├── symlink_file
+├── ignore_file
+├── another.py
+├── symlink_dir
+└── random.py
+"""
+
+    elif sys.platform == "darwin":  # MacOS
+        expected_output = """├── ignore_dir/
 test_directory/
 ├── symlink_dir
 ├── ignore_file
@@ -33,4 +47,9 @@ test_directory/
 ├── another.py
 └── symlink_file
 """
+    else:  # Something else (throw error)
+        expected_output = ""
+
+    assert result.output == expected_output
+    assert result.output == expected_output
     assert result.output == expected_output
