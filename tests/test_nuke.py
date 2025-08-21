@@ -15,28 +15,49 @@ from nuke import nuke
 NUKEIGNORE = Path('.nukeignore')
 
 
-@pytest.fixture(name="directory")
-def directory_fixture():
-    """Invoked each time before running a test."""
-    TEST_DIR = Path("test_directory")
+@pytest.fixture(name="base_directory")
+def base_directory_fixture():
+    directory = Path("test_directory")
+
     try:
-        TEST_DIR.mkdir()
+        directory.mkdir()
     except (FileExistsError, ):
         # if the test directory already exists then just continue.
         pass
 
-    open((TEST_DIR / "random.py"), 'a').close()
-    open((TEST_DIR / "another.py"), 'a').close()
-    (TEST_DIR / 'ignore_dir').mkdir()
-    open((TEST_DIR / 'ignore_file'), 'a').close()
-    open((TEST_DIR / 'ignore_file'), 'a').close()
-    Path(TEST_DIR / "symlink_file").symlink_to(TEST_DIR / "random.py")
-    Path(TEST_DIR / "symlink_dir").symlink_to(TEST_DIR / "ignore_dir")
-
-    yield TEST_DIR
+    yield directory
 
     # remove the test directory
-    shutil.rmtree(TEST_DIR)
+    shutil.rmtree(directory)
+
+
+@pytest.fixture(name="directory")
+def directory_fixture(base_directory):
+    """Invoked each time before running a test."""
+
+    open(base_directory / "random.py", 'a').close()
+    open(base_directory / "another.py", 'a').close()
+    (base_directory / 'ignore_dir').mkdir()
+    open(base_directory / 'ignore_file', 'a').close()
+    open(base_directory / 'ignore_file', 'a').close()
+    Path(base_directory / "symlink_file").symlink_to(base_directory /
+                                                     "random.py")
+    Path(base_directory / "symlink_dir").symlink_to(base_directory /
+                                                    "ignore_dir")
+
+    return base_directory
+
+
+def test_delete_nonempty_directory(base_directory):
+    # Create sample directory to delete
+    sample_dir = base_directory / 'sample_dir'
+    sample_dir.mkdir()
+
+    # Make directory non-empty
+    open((sample_dir / 'sample_file'), 'a').close()
+
+    assert not nuke.delete(
+        sample_dir), "Non-empty directory didn't get deleted"
 
 
 def test_nuke_dir(directory):
@@ -118,3 +139,8 @@ def test_nuke_list(directory):
 
     # clean up the directory for the teardown
     nuke.nuke(directory)
+
+
+def test_main(directory):
+    nuke.main(str(directory), False, False)
+    assert os.listdir(directory) == []

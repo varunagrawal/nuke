@@ -85,28 +85,29 @@ def list_files_tree(directory: Path) -> List[Dict[str, Any]]:
     return file_list
 
 
-def delete(x: Path) -> None:
-    """
-    Convenience method to delete file or directory.
-    :param x: The filesystem object to delete.
+def delete(x: Path) -> bool:
+    """Convenience method to delete file or directory.
+
+    Args:
+        x (Path): The filesystem object to delete.
+
+    Returns:
+        bool: Return True if path was successfully deleted, else False.
     """
     if x.is_dir():
         # delete the directory
         try:
-            # Check if directory is a symbolic link
-            if x.is_symlink():
-                x.unlink()
-            else:
-                # Just a regular delete
-                x.rmdir()
+            x.rmdir()
         except (OSError, ):
             # This means the directory is not empty, so do nothing.
-            # Possibly because an nukeignored file is in the directory.
-            return
+            # Possibly because an `nukeignore`d file is in the directory.
+            return False
 
     else:
         # delete the file
         x.unlink()
+
+    return True
 
 
 def nuke(directory: Path) -> None:
@@ -147,7 +148,7 @@ def nuke(directory: Path) -> None:
               is_eager=True,
               default=False,
               help="Flag to confirm nuking")
-def main(directory: str, l: bool, y: bool):
+def main(directory: str, list_files: bool, y: bool):
     """
     Nuke (aka delete the contents of) the DIRECTORY specified.
     Default directory is the current directory.
@@ -160,9 +161,10 @@ def main(directory: str, l: bool, y: bool):
             "Invalid directory specified. Please ensure directory is valid.",
             fg="red")
 
-    if l:
+    if list_files:
         list_files_tree(directory=directory)
         return
+
     if y or click.confirm(
             "Are you sure you want to nuke directory " +
             crayons.blue(directory) + "?",
